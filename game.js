@@ -9,7 +9,6 @@ class tile {
     }
 
     move(dir, grid, turn, g) {
-       // console.log(grid);
         for (let i = 0; i < grid.length; i++) {
             if (!(grid[i].x == this.x && grid[i].y == this.y) && (grid[i].x == this.x + dir.x && grid[i].y == this.y + dir.y)) {
                 if (grid[i].val !== this.val) {

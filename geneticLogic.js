@@ -22,10 +22,13 @@ let activationFunctions = [(x) => x, (x) => 1/(1+Math.pow(Math.E, -x)), (x) => M
 for(let i = 0; i < population.length; i++){
     let genes = new Array(10);
     for(let i = 0; i < genes.length; i++){
-        genes[i] = [Math.floor(Math.random() * 16), 16 + (Math.floor(Math.random() * 4)), Math.random() * 2 - 1, true, activationFunctions[Math.floor(Math.random()*activationFunctions.length)],0];
-        genes[i][5] = gM.getGeneNumber(genes[i]);
+        genes[i] = [Math.floor(Math.random() * 16), 16 + (Math.floor(Math.random() * 4)), Math.random() * 2 - 1, true, activationFunctions[Math.floor(Math.random()*activationFunctions.length)]];
     }
-    population[i] = [new topology(genes,16,4), new game()];
+    let activations = new Array(20);
+    for(let i = 0; i < activations.length; i++){
+        activations[i] = activationFunctions[Math.floor(Math.random() * activationFunctions.length)];
+    }
+    population[i] = [new topology(genes,16,4, activations), new game()];
     population[i][1].generateStart();
 }
 
