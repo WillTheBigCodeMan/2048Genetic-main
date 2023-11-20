@@ -8,12 +8,12 @@ class tile {
         this.lastMerged = lastMerged;
     }
 
-    move(dir, grid, turn, score) {
+    move(dir, grid, turn, g) {
        // console.log(grid);
         for (let i = 0; i < grid.length; i++) {
             if (!(grid[i].x == this.x && grid[i].y == this.y) && (grid[i].x == this.x + dir.x && grid[i].y == this.y + dir.y)) {
                 if (grid[i].val !== this.val) {
-                    if (grid[i].move(dir,grid,turn)) {
+                    if (grid[i].move(dir,grid,turn, g)) {
                         this.x += dir.x;
                         this.y += dir.y;
                         return true;
@@ -22,7 +22,7 @@ class tile {
                     }
                 } else if (grid[i].lastMerged < turn && this.lastMerged < turn) {
                     grid[i].val += this.val;
-                    score+= grid[i].val;
+                    g.score+= grid[i].val;
                     grid[i].lastMerged = turn;
                     grid[i].prevX = 0.5 * (grid[i].x - this.prevX) + this.prevX;
                     grid[i].prevY = 0.5 *(grid[i].y - this.prevY) + this.prevY;
@@ -113,7 +113,7 @@ class game{
         while (true) {
             let fullMove = true;
             for (let i = 0; i < this.grid.length; i++) {
-                if (this.grid[i].move(dir, this.grid, this.turn, this.score)) {
+                if (this.grid[i].move(dir, this.grid, this.turn, this)) {
                     fullMove = false;
                     madeMove = true;
                 }
@@ -134,7 +134,6 @@ ctx.textAlign = "center";
 const $ = (id) => document.getElementById(id);
 
 function render(g) {
-    console.log(g);
     ctx.fillStyle = "gray";
     ctx.fillRect(0, 0, 800, 800);
     for (let i = 0; i < g.grid.length; i++) {

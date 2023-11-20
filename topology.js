@@ -1,4 +1,4 @@
-// One gene = [fromNode (int), toNode(int), weight(float), enabled(bool)]
+// One gene = [fromNode (int), toNode(int), weight(float), enabled(bool), activation(function), geneNumber(int)]
 
 class topology{
     constructor(genes, inputs, outputs){
@@ -30,5 +30,12 @@ class topology{
             output[i] = nodeValues[this.ins + i];
         }
         return output.indexOf(Math.max(...output));
+    }
+
+    mutate(){
+        if(Math.random() < 0.9) this.mutateWeight(Math.random() * this.genes.length);
+        if(Math.random() < 0.2) this.mutateNode();
+        if(Math.random() < 0.2) this.toggleConnection();
+        if(Math.random() < 0.35) this.mutateActivation();
     }
 }
