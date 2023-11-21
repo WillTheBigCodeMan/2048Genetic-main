@@ -125,6 +125,17 @@ class game{
             this.framesSince = 0;
         }
     }
+    isDead(){
+        if(this.grid.length< 16) return false;
+        this.grid.sort(function(a,b){return (a.x+4*a.y) - (b.x + 4*b.y)});
+        for(let i = 0; i < this.grid.length; i++){
+            if(i>0&&this.grid[i-1].val==this.grid[i].val) return false;
+            if(i<15&&this.grid[i+1].val==this.grid[i].val) return false;
+            if(i<12&&this.grid[i+4].val==this.grid[i].val) return false;
+            if(i>3&&this.grid[i-4].val==this.grid[i].val) return false;
+        }
+        return true;
+    }
 }
 
 const cvs = document.getElementById("gameCvs");

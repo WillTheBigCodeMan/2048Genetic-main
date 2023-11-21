@@ -8,33 +8,42 @@ class topology {
         this.nodeCount = 0;
         this.as = activations;
         for (let i = 0; i < this.genes.length; i++) {
-            if (this.genes[i][1] > this.nodeCount) {
-                this.nodeCount = this.genes[i][1];
+            if (this.genes[i][1]> this.nodeCount - 1) {
+                this.nodeCount = this.genes[i][1] + 1;
             }
         }
-        console.log(this.nodeCount);
     }
 
     processOutput(inputs) {
+        this.sortGenes();
         let nodeValues = new Array(this.nodeCount);
         for (let i = 0; i < this.ins; i++) {
             nodeValues[i] = inputs[i];
         }
-        for (let i = this.ins; i < this.ins + this.outs; i++) {
+        for (let i = this.ins; i < nodeValues.length; i++) {
             nodeValues[i] = 0;
         }
+
         let lastTo = this.genes[0][1];
         for (let i = 0; i < this.genes.length; i++) {
             if (this.genes[i][1] !== lastTo) {
-                nodeValues[lastTo] = this.as[lastTo](nodeValues[lastTo]);
+                try{
+                    nodeValues[lastTo] = this.as[lastTo](nodeValues[lastTo]);
+                } catch{
+                    console.log(this);
+                }
                 lastTo = this.genes[i][1];
             }
             if (this.genes[i][3]) nodeValues[this.genes[i][1]] += nodeValues[this.genes[i][0]] * this.genes[i][2];
         }
         let output = new Array(this.outs);
-        for (let i = 0; i < output.length; i++) {
-            output[i] = nodeValues[this.ins + i];
+        for(let i = 0; i < output.length; i++){
+            output[i] = 0;
         }
+        for (let i = 0; i < output.length; i++) {
+            if(this.ins + i < nodeValues.length) output[i] = nodeValues[this.ins + i];
+        }
+        if(output.indexOf(Math.max(...output))==-1){console.log(nodeValues)}
         return output.indexOf(Math.max(...output));
     }
 
@@ -45,6 +54,7 @@ class topology {
         if (Math.random() < 0.35) this.mutateActivation();
         if (Math.random() < 0.35) this.randomiseWeight();
         if (Math.random() < 0.15) this.addConnection();
+        //this.sortGenes();
     }
 
     mutateWeight(n) {
@@ -72,10 +82,10 @@ class topology {
     mutateNode() {
         let x = Math.floor(Math.random() * this.genes.length);
         const store = this.genes[x][1];
-        this.genes[x][1] = this.nodeCount + 1;
+        this.genes[x][1] = this.nodeCount;
         this.nodeCount++;
         this.as.push(activationFunctions[Math.floor(Math.random() * activationFunctions.length)])
-        this.genes.splice(x, 0, [this.nodeCount, store, 1, true, gM.getGeneNumber([this.nodeCount, store])]);
+        this.genes.splice(x, 0, [this.nodeCount - 1, store, 1, true, gM.getGeneNumber([this.nodeCount - 1, store])]);
     }
 
     addConnection() {
@@ -85,12 +95,15 @@ class topology {
             x = Math.floor(Math.random() * (this.nodeCount - this.outs));
             if (x > this.ins && x < this.ins + this.outs) x += this.outs;
             y = Math.floor(Math.random() * (this.nodeCount - (x - this.outs))) + x;
-            if (y > this.nodeCount) y = this.ins + (y - this.nodeCount);
+            if (y >= this.nodeCount) y = this.ins + (y - this.nodeCount);
             let valid = true;
             for (let i = 0; i < this.genes.length; i++) {
                 if (this.genes[i][0] == x && this.genes[i][1] == y) valid = false;
             }
             if (valid) break;
+        }
+        if(y >= this.nodeCount){
+            console.log(x, y);
         }
         this.genes.push([x, y, Math.random() * 2 - 1, true, gM.getGeneNumber([x, y])]);
         this.sortGenes();
