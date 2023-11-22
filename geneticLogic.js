@@ -47,37 +47,37 @@ const moves = [{
     y: -1
 }];
 
-setInterval(() => {
-    allDead = true;
-    population.map((x) => {
-        if (x[2]) {
-            allDead = false;
-            let inputs = new Array(16);
-            for (let i = 0; i < inputs.length; i++) {
-                inputs[i] = 0;
-            }
-            for (let i = 0; i < x[1].grid.length; i++) {
-                inputs[x[1].grid[i].x + x[1].grid[i].y * 4] = x[1].grid[i].val;
-            }
-            let output = x[0].processOutput(inputs);
-            if(output == -1) console.log(inputs, x);
-            if (x[3] == output) x[4]--;
-            if (x[4] <= 0) x[2] = false;
-            if (x[1].isDead()) x[2] = false;
-            x[3] = output;
-            x[1].move(moves[output]);
-        }
-    });
-    if(allDead){
-        console.log("NEW GENERATION");
-        population.sort((a,b) => a[1].score - b[1].score);
-        for(let i = 10; i < population.length; i++){
-            population[i] = [new topology(copyGenes(population[i%10][0].genes), 16, 4, copyActivations(population[i%10][0].as)), new game(), true, undefined, 5];
-            population[i][0].mutate();
-            population[i][1].generateStart();
-        }
-    }
-}, 200);
+// setInterval(() => {
+//     allDead = true;
+//     population.map((x) => {
+//         if (x[2]) {
+//             allDead = false;
+//             let inputs = new Array(16);
+//             for (let i = 0; i < inputs.length; i++) {
+//                 inputs[i] = 0;
+//             }
+//             for (let i = 0; i < x[1].grid.length; i++) {
+//                 inputs[x[1].grid[i].x + x[1].grid[i].y * 4] = x[1].grid[i].val;
+//             }
+//             let output = x[0].processOutput(inputs);
+//             if(output == -1) console.log(inputs, x);
+//             if (x[3] == output) x[4]--;
+//             if (x[4] <= 0) x[2] = false;
+//             if (x[1].isDead()) x[2] = false;
+//             x[3] = output;
+//             x[1].move(moves[output]);
+//         }
+//     });
+//     if(allDead){
+//         console.log("NEW GENERATION");
+//         population.sort((a,b) => a[1].score - b[1].score);
+//         for(let i = 10; i < population.length; i++){
+//             population[i] = [new topology(copyGenes(population[i%10][0].genes), 16, 4, copyActivations(population[i%10][0].as)), new game(), true, undefined, 5];
+//             population[i][0].mutate();
+//             population[i][1].generateStart();
+//         }
+//     }
+// }, 200);
 
 setInterval(() => {
     let x = 0;

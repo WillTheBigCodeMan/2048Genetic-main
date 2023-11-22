@@ -12,6 +12,7 @@ class topology {
                 this.nodeCount = this.genes[i][1] + 1;
             }
         }
+        this.maxConnections = (this.nodeCount - this.outs)
     }
 
     processOutput(inputs) {
@@ -89,13 +90,14 @@ class topology {
     }
 
     addConnection() {
+        if(this.genes.length >= this.maxConnections) return false;
         let x;
         let y;
         while (true) {
             x = Math.floor(Math.random() * (this.nodeCount - this.outs));
-            if (x > this.ins && x < this.ins + this.outs) x += this.outs;
-            y = Math.floor(Math.random() * (this.nodeCount - (x - this.outs))) + x;
-            if (y >= this.nodeCount) y = this.ins + (y - this.nodeCount);
+            if (x > this.ins && x < this.ins + this.outs) x -= this.outs;
+            y = Math.floor(Math.random() * (this.nodeCount - (x > this.ins ? x : this.ins))) + (x > this.ins ? x : this.ins);
+            if (y >= this.nodeCount) y = this.ins + y%this.outs;
             let valid = true;
             for (let i = 0; i < this.genes.length; i++) {
                 if (this.genes[i][0] == x && this.genes[i][1] == y) valid = false;
